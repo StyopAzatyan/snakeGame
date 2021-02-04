@@ -27,32 +27,22 @@ class App extends Component {
     ]
   }
 
-  componentDidMount() {
-    setInterval(this.moveSnake, this.state.speed);
-    document.onkeydown = this.onkeydown;
-  }
-
-  componentDidUpdate() {
-    this.checkIFOutBorders()
-    this.checkIfEat();
-    this.growSnake()
-  }
-
   onkeydown = (e) => {
     e = e || window.event;
     switch (e.keyCode) {
-      case 37:
+      case 40:
         this.setState({ direction: 'LEFT' });
         break;
-      case 38:
+      case 39:
         this.setState({ direction: 'UP' });
         break;
-      case 39:
+      case 38:
         this.setState({ direction: 'RIGHT' });
         break;
-      case 40:
+      case 37:
         this.setState({ direction: 'DOWN' });
         break;
+        default:
     }
   }
 
@@ -74,6 +64,7 @@ class App extends Component {
       case 'UP':
         head = [head[0], head[1] + 2];
         break;
+        default:
     }
     dots.push(head);
     dots.shift();
@@ -82,17 +73,29 @@ class App extends Component {
     })
   }
 
-  checkIFOutBorders() {
+  checkOutBorders() {
     let head = this.state.snakeDots[this.state.snakeDots.length - 1];
     if (head[0] >= 100 || head[1] >= 100 || head[0] < 0 || head[1] < 0) {
       this.onGameOver();
     }
   }
 
+  checkIfCollapsed() {
+    let snake = [...this.state.snakeDots];
+    let head = snake[snake.length - 1];
+    snake.pop();
+    snake.forEach(dot => {
+      if (head[0] == dot[0] && head[1] == dot[1]) {
+        this.onGameOver();
+      }
+    })
+  }
+  
+
   checkIfEat(){
     let head = this.state.snakeDots[this.state.snakeDots.length - 1];
     let food = this.state.food;
-    if (head[0] == food[0] && head[1] == food[1]) {
+    if (head[1] === food[0] && head[0] === food[1]) {
       this.setState({
         food: getRandomPlace()
       })
@@ -110,6 +113,7 @@ class App extends Component {
     })
   }
 
+
   onGameOver() {
     alert(`Game Over. Snake length is ${this.state.snakeDots.length}`)
     this.setState({
@@ -121,6 +125,16 @@ class App extends Component {
         [0, 2]
       ]
     })
+  }
+  componentDidMount() {
+    setInterval(this.moveSnake, this.state.speed);
+    document.onkeydown = this.onkeydown;
+  }
+
+  componentDidUpdate() {
+    this.checkOutBorders()
+    this.checkIfEat()
+    this.checkIfCollapsed()
   }
 
   render() {
@@ -134,3 +148,6 @@ class App extends Component {
 }
 
 export default App;
+
+
+

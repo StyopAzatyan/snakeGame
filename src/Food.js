@@ -1,6 +1,6 @@
 import React from "react";
 
-export default (props) => {
+let Food= (props) => {
 
     const style = {
         left: `${props.dot[0]}%`,
@@ -11,3 +11,5 @@ export default (props) => {
         <div className="snakeFood" style={style}></div>
     )
 }
+
+export default Food;
